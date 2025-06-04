@@ -17,7 +17,7 @@
 }
 -keepclassmembers class org.lsposed.lspd.impl.LSPosedBridge$NativeHooker {
     <init>(java.lang.reflect.Executable);
-    callback(...);
+    callInstall(...);
 }
 -keepclassmembers class org.lsposed.lspd.impl.LSPosedBridge$HookerCallback {
     final *** beforeInvocation;

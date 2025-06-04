@@ -79,7 +79,7 @@ public class LSPosedBridge {
 
         // This method is quite critical. We should try not to use system methods to avoid
         // endless recursive
-        public Object callback(Object[] args) throws Throwable {
+        public Object callInstall(Object[] args) throws Throwable {
             LSPosedHookCallback<T> callback = new LSPosedHookCallback<>();
 
             var array = ((Object[]) params);

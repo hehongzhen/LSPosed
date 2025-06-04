@@ -102,7 +102,7 @@ LSP_DEF_NATIVE_METHOD(jboolean, InstalldBridge, hookMethod, jboolean useModernAp
     });
     if (newHook) {
         auto init = env->GetMethodID(hooker, "<init>", "(Ljava/lang/reflect/Executable;)V");
-        auto callback_method = env->ToReflectedMethod(hooker, env->GetMethodID(hooker, "callback",
+        auto callback_method = env->ToReflectedMethod(hooker, env->GetMethodID(hooker, "callInstall",
                                                                                "([Ljava/lang/Object;)Ljava/lang/Object;"),
                                                       false);
         auto hooker_object = env->NewObject(hooker, init, hookMethod);
