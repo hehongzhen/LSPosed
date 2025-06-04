@@ -67,8 +67,6 @@ import de.robv.android.xposed.XposedInit;
 import de.robv.android.xposed.callbacks.XC_LayoutInflated;
 import de.robv.android.xposed.callbacks.XC_LayoutInflated.LayoutInflatedParam;
 import de.robv.android.xposed.callbacks.XCallback;
-import xposed.dummy.XResourcesSuperClass;
-import xposed.dummy.XTypedArraySuperClass;
 
 /**
  * {@link android.content.res.Resources} subclass that allows replacing individual resources.
@@ -78,7 +76,7 @@ import xposed.dummy.XTypedArraySuperClass;
  * be set using the methods made available via the API methods in this class.
  */
 @SuppressWarnings("JniMissingFunction")
-public class XResources extends XResourcesSuperClass {
+public class XResources extends android.content.res.Resources {
 	private static final SparseArray<HashMap<String, Object>> sReplacements = new SparseArray<>();
 	private static final SparseArray<HashMap<String, ResourceNames>> sResourceNames = new SparseArray<>();
 
@@ -105,7 +103,7 @@ public class XResources extends XResourcesSuperClass {
 	private String mPackageName;
 
 	public XResources(ClassLoader classLoader, String resDir) {
-		super(classLoader);
+		super(null, null, null);
 
 		this.mResDir = resDir;
 		this.mPackageName = getPackageName(resDir);
@@ -1267,10 +1265,10 @@ public class XResources extends XResourcesSuperClass {
 	 * Mainly used when inflating layouts.
 	 * @hide
 	 */
-	public static class XTypedArray extends XTypedArraySuperClass {
+	public static class XTypedArray extends android.content.res.TypedArray {
 
         public XTypedArray(Resources resources) {
-            super(resources);
+            super();
         }
 
         /** Dummy, will never be called (objects are transferred to this class only). */

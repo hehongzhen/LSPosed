@@ -126,13 +126,13 @@ namespace lspd {
                                                    "(Ljava/nio/ByteBuffer;Ljava/lang/ClassLoader;)V");
         DexBuilder dex_file;
 
-        ClassBuilder xresource_builder{
-                dex_file.MakeClass("xposed.dummy.XResourcesSuperClass")};
-        xresource_builder.setSuperClass(TypeDescriptor::FromClassname(JUTFString(env, resource_super_class).get()));
-
-        ClassBuilder xtypearray_builder{
-                dex_file.MakeClass("xposed.dummy.XTypedArraySuperClass")};
-        xtypearray_builder.setSuperClass(TypeDescriptor::FromClassname(JUTFString(env, typed_array_super_class).get()));
+//        ClassBuilder xresource_builder{
+//                dex_file.MakeClass("xposed.dummy.XResourcesSuperClass")};
+//        xresource_builder.setSuperClass(TypeDescriptor::FromClassname(JUTFString(env, resource_super_class).get()));
+//
+//        ClassBuilder xtypearray_builder{
+//                dex_file.MakeClass("xposed.dummy.XTypedArraySuperClass")};
+//        xtypearray_builder.setSuperClass(TypeDescriptor::FromClassname(JUTFString(env, typed_array_super_class).get()));
 
         slicer::MemView image{dex_file.CreateImage()};
 
