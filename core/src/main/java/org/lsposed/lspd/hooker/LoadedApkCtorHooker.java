@@ -28,16 +28,16 @@ import org.lsposed.lspd.util.Hookers;
 
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.XposedInit;
-import io.github.libxposed.api.XposedInterface;
-import io.github.libxposed.api.annotations.AfterInvocation;
-import io.github.libxposed.api.annotations.XposedHooker;
+import io.github.libinstalld.api.InstalldInterface;
+import io.github.libinstalld.api.annotations.AInvocation;
+import io.github.libinstalld.api.annotations.InstalldHooker;
 
 // when a package is loaded for an existing process, trigger the callbacks as well
-@XposedHooker
-public class LoadedApkCtorHooker implements XposedInterface.Hooker {
+@InstalldHooker
+public class LoadedApkCtorHooker implements InstalldInterface.Hooker {
 
-    @AfterInvocation
-    public static void afterHookedMethod(XposedInterface.AfterHookCallback callback) {
+    @AInvocation
+    public static void afterHookedMethod(InstalldInterface.AfterHookCallback callback) {
         Hookers.logD("LoadedApk#<init> starts");
 
         try {

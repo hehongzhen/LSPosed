@@ -30,15 +30,15 @@ import org.lsposed.lspd.util.Hookers;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedInit;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
-import io.github.libxposed.api.XposedInterface;
-import io.github.libxposed.api.XposedModuleInterface;
-import io.github.libxposed.api.annotations.BeforeInvocation;
-import io.github.libxposed.api.annotations.XposedHooker;
+import io.github.libinstalld.api.InstalldInterface;
+import io.github.libinstalld.api.InstalldModuleInterface;
+import io.github.libinstalld.api.annotations.BInvocation;
+import io.github.libinstalld.api.annotations.InstalldHooker;
 
-@XposedHooker
-public class StartBootstrapServicesHooker implements XposedInterface.Hooker {
+@InstalldHooker
+public class StartBootstrapServicesHooker implements InstalldInterface.Hooker {
 
-    @BeforeInvocation
+    @BInvocation
     public static void beforeHookedMethod() {
         logD("SystemServer#startBootstrapServices() starts");
 
@@ -53,7 +53,7 @@ public class StartBootstrapServicesHooker implements XposedInterface.Hooker {
             lpparam.isFirstApplication = true;
             XC_LoadPackage.callAll(lpparam);
 
-            LSPosedContext.callOnSystemServerLoaded(new XposedModuleInterface.SystemServerLoadedParam() {
+            LSPosedContext.callOnSystemServerLoaded(new InstalldModuleInterface.SystemServerLoadedParam() {
                 @Override
                 @NonNull
                 public ClassLoader getClassLoader() {

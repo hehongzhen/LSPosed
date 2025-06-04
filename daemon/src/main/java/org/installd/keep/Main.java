@@ -1,4 +1,4 @@
-package org.lsposed.lspd;
+package org.installd.keep;
 
 import org.lsposed.lspd.service.ServiceManager;
 

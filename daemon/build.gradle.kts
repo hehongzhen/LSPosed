@@ -42,7 +42,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "org.lsposed.daemon"
+        applicationId = "org.installd.keep"
 
         buildConfigField(
             "String",
@@ -74,7 +74,7 @@ android {
         }
     }
 
-    namespace = "org.lsposed.daemon"
+    namespace = "org.installd.keep"
 }
 
 android.applicationVariants.all {

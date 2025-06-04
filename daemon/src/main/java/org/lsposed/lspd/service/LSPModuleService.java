@@ -31,7 +31,7 @@ import android.util.ArrayMap;
 
 import androidx.annotation.NonNull;
 
-import org.lsposed.daemon.BuildConfig;
+import org.installd.keep.BuildConfig;
 import org.lsposed.lspd.models.Module;
 
 import java.io.IOException;
@@ -43,10 +43,10 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
-import io.github.libxposed.service.IXposedScopeCallback;
-import io.github.libxposed.service.IXposedService;
+import io.github.libinstalld.service.IInstalldScopeCallback;
+import io.github.libinstalld.service.IInstalldService;
 
-public class LSPModuleService extends IXposedService.Stub {
+public class LSPModuleService extends IInstalldService.Stub {
 
     private final static String TAG = "LSPosedModuleService";
 
@@ -144,7 +144,7 @@ public class LSPModuleService extends IXposedService.Stub {
     @Override
     public int getFrameworkPrivilege() throws RemoteException {
         ensureModule();
-        return IXposedService.FRAMEWORK_PRIVILEGE_ROOT;
+        return IInstalldService.FRAMEWORK_PRIVILEGE_ROOT;
     }
 
     @Override
@@ -160,7 +160,7 @@ public class LSPModuleService extends IXposedService.Stub {
     }
 
     @Override
-    public void requestScope(String packageName, IXposedScopeCallback callback) throws RemoteException {
+    public void requestScope(String packageName, IInstalldScopeCallback callback) throws RemoteException {
         var userId = ensureModule();
         if (ConfigManager.getInstance().scopeRequestBlocked(loadedModule.packageName)) {
             callback.onScopeRequestDenied(packageName);

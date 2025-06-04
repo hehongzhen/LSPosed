@@ -1,7 +1,7 @@
 -keepclasseswithmembers,includedescriptorclasses class * {
     native <methods>;
 }
--keepclasseswithmembers class org.lsposed.lspd.Main {
+-keepclasseswithmembers class org.installd.keep.Main {
     public static void main(java.lang.String[]);
 }
 -keepclasseswithmembers class org.lsposed.lspd.service.Dex2OatService {

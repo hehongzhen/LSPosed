@@ -6,9 +6,9 @@ import androidx.annotation.Nullable;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Member;
 
-import io.github.libxposed.api.XposedInterface;
+import io.github.libinstalld.api.InstalldInterface;
 
-public class LSPosedHookCallback<T extends Executable> implements XposedInterface.BeforeHookCallback, XposedInterface.AfterHookCallback {
+public class LSPosedHookCallback<T extends Executable> implements InstalldInterface.BeforeHookCallback, InstalldInterface.AfterHookCallback {
 
     public Member method;
 

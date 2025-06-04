@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 
 import dalvik.annotation.optimization.FastNative;
-import io.github.libxposed.api.utils.DexParser;
+import io.github.libinstalld.api.utils.DexParser;
 
 public class DexParserBridge {
     @FastNative

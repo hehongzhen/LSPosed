@@ -34,15 +34,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import io.github.libxposed.api.XposedInterface;
-import io.github.libxposed.api.XposedModule;
-import io.github.libxposed.api.XposedModuleInterface;
-import io.github.libxposed.api.errors.XposedFrameworkError;
-import io.github.libxposed.api.utils.DexParser;
+import io.github.libinstalld.api.InstalldInterface;
+import io.github.libinstalld.api.InstalldModule;
+import io.github.libinstalld.api.InstalldModuleInterface;
+import io.github.libinstalld.api.errors.InstalldFrameworkError;
+import io.github.libinstalld.api.utils.DexParser;
 
 
 @SuppressLint("NewApi")
-public class LSPosedContext implements XposedInterface {
+public class LSPosedContext implements InstalldInterface {
 
     private static final String TAG = "LSPosedContext";
 
@@ -50,7 +50,7 @@ public class LSPosedContext implements XposedInterface {
     public static String appDir;
     public static String processName;
 
-    static final Set<XposedModule> modules = ConcurrentHashMap.newKeySet();
+    static final Set<InstalldModule> modules = ConcurrentHashMap.newKeySet();
 
     private final String mPackageName;
     private final ApplicationInfo mApplicationInfo;
@@ -63,8 +63,8 @@ public class LSPosedContext implements XposedInterface {
         this.service = service;
     }
 
-    public static void callOnPackageLoaded(XposedModuleInterface.PackageLoadedParam param) {
-        for (XposedModule module : modules) {
+    public static void callOnPackageLoaded(InstalldModuleInterface.PackageLoadedParam param) {
+        for (InstalldModule module : modules) {
             try {
                 module.onPackageLoaded(param);
             } catch (Throwable t) {
@@ -72,8 +72,8 @@ public class LSPosedContext implements XposedInterface {
         }
     }
 
-    public static void callOnSystemServerLoaded(XposedModuleInterface.SystemServerLoadedParam param) {
-        for (XposedModule module : modules) {
+    public static void callOnSystemServerLoaded(InstalldModuleInterface.SystemServerLoadedParam param) {
+        for (InstalldModule module : modules) {
             try {
                 module.onSystemServerLoaded(param);
             } catch (Throwable t) {
@@ -90,20 +90,20 @@ public class LSPosedContext implements XposedInterface {
                 sb.append(module.apkPath).append("!/lib/").append(abi).append(File.pathSeparator);
             }
             var librarySearchPath = sb.toString();
-            var initLoader = XposedModule.class.getClassLoader();
+            var initLoader = InstalldModule.class.getClassLoader();
             var mcl = LspModuleClassLoader.loadApk(module.apkPath, module.file.preLoadedDexes, librarySearchPath, initLoader);
-            if (mcl.loadClass(XposedModule.class.getName()).getClassLoader() != initLoader) {
+            if (mcl.loadClass(InstalldModule.class.getName()).getClassLoader() != initLoader) {
                 return false;
             }
             var ctx = new LSPosedContext(module.packageName, module.applicationInfo, module.service);
             for (var entry : module.file.moduleClassNames) {
                 var moduleClass = mcl.loadClass(entry);
-                if (!XposedModule.class.isAssignableFrom(moduleClass)) {
+                if (!InstalldModule.class.isAssignableFrom(moduleClass)) {
                     continue;
                 }
                 try {
-                    var moduleEntry = moduleClass.getConstructor(XposedInterface.class, XposedModuleInterface.ModuleLoadedParam.class);
-                    var moduleContext = (XposedModule) moduleEntry.newInstance(ctx, new XposedModuleInterface.ModuleLoadedParam() {
+                    var moduleEntry = moduleClass.getConstructor(InstalldInterface.class, InstalldModuleInterface.ModuleLoadedParam.class);
+                    var moduleContext = (InstalldModule) moduleEntry.newInstance(ctx, new InstalldModuleInterface.ModuleLoadedParam() {
                         @Override
                         public boolean isSystemServer() {
                             return isSystemServer;
@@ -292,7 +292,7 @@ public class LSPosedContext implements XposedInterface {
                 return new LSPosedRemotePreferences(service, n);
             } catch (RemoteException e) {
                 log("Failed to get remote preferences", e);
-                throw new XposedFrameworkError(e);
+                throw new InstalldFrameworkError(e);
             }
         });
     }
@@ -304,7 +304,7 @@ public class LSPosedContext implements XposedInterface {
             return service.getRemoteFileList();
         } catch (RemoteException e) {
             log("Failed to list remote files", e);
-            throw new XposedFrameworkError(e);
+            throw new InstalldFrameworkError(e);
         }
     }
 

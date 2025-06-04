@@ -43,7 +43,7 @@ import android.os.RemoteException;
 import android.provider.Telephony;
 import android.telephony.TelephonyManager;
 
-import org.lsposed.daemon.BuildConfig;
+import org.installd.keep.BuildConfig;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -53,7 +53,7 @@ import java.util.function.Consumer;
 import java.util.zip.ZipFile;
 
 import hidden.HiddenApiBridge;
-import io.github.libxposed.service.IXposedScopeCallback;
+import io.github.libinstalld.service.IInstalldScopeCallback;
 
 public class LSPosedService extends ILSPosedService.Stub {
     private static final int AID_NOBODY = 9999;
@@ -268,7 +268,7 @@ public class LSPosedService extends ILSPosedService.Stub {
         var action = data.getQueryParameter("action");
         if (action == null) return;
 
-        var iCallback = IXposedScopeCallback.Stub.asInterface(callback);
+        var iCallback = IInstalldScopeCallback.Stub.asInterface(callback);
         try {
             var applicationInfo = PackageService.getApplicationInfo(scopePackageName, 0, userId);
             if (applicationInfo == null) {

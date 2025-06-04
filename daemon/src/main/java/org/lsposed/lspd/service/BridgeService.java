@@ -11,7 +11,7 @@ import android.os.ServiceManager;
 import android.system.ErrnoException;
 import android.system.Os;
 
-import org.lsposed.daemon.BuildConfig;
+import org.installd.keep.BuildConfig;
 
 import java.lang.reflect.Field;
 import java.util.Map;

@@ -51,7 +51,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.apache.commons.lang3.SerializationUtils;
-import org.lsposed.daemon.BuildConfig;
+import org.installd.keep.BuildConfig;
 import org.lsposed.lspd.models.Application;
 import org.lsposed.lspd.models.Module;
 

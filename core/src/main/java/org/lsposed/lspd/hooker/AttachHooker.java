@@ -3,15 +3,15 @@ package org.lsposed.lspd.hooker;
 import android.app.ActivityThread;
 
 import de.robv.android.xposed.XposedInit;
-import io.github.libxposed.api.XposedInterface;
-import io.github.libxposed.api.annotations.AfterInvocation;
-import io.github.libxposed.api.annotations.XposedHooker;
+import io.github.libinstalld.api.InstalldInterface;
+import io.github.libinstalld.api.annotations.AInvocation;
+import io.github.libinstalld.api.annotations.InstalldHooker;
 
-@XposedHooker
-public class AttachHooker implements XposedInterface.Hooker {
+@InstalldHooker
+public class AttachHooker implements InstalldInterface.Hooker {
 
-    @AfterInvocation
-    public static void afterHookedMethod(XposedInterface.AfterHookCallback callback) {
+    @AInvocation
+    public static void afterHookedMethod(InstalldInterface.AfterHookCallback callback) {
         XposedInit.loadModules((ActivityThread) callback.getThisObject());
     }
 }

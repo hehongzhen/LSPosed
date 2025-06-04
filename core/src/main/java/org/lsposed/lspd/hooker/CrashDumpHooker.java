@@ -3,15 +3,15 @@ package org.lsposed.lspd.hooker;
 
 import org.lsposed.lspd.impl.LSPosedBridge;
 
-import io.github.libxposed.api.XposedInterface;
-import io.github.libxposed.api.annotations.BeforeInvocation;
-import io.github.libxposed.api.annotations.XposedHooker;
+import io.github.libinstalld.api.InstalldInterface;
+import io.github.libinstalld.api.annotations.BInvocation;
+import io.github.libinstalld.api.annotations.InstalldHooker;
 
-@XposedHooker
-public class CrashDumpHooker implements XposedInterface.Hooker {
+@InstalldHooker
+public class CrashDumpHooker implements InstalldInterface.Hooker {
 
-    @BeforeInvocation
-    public static void beforeHookedMethod(XposedInterface.BeforeHookCallback callback) {
+    @BInvocation
+    public static void beforeHookedMethod(InstalldInterface.BeforeHookCallback callback) {
         try {
             var e = (Throwable) callback.getArgs()[0];
         } catch (Throwable ignored) {

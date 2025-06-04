@@ -5,15 +5,15 @@ import android.os.Build;
 import org.lsposed.lspd.impl.LSPosedBridge;
 import org.lsposed.lspd.nativebridge.HookBridge;
 
-import io.github.libxposed.api.XposedInterface;
-import io.github.libxposed.api.annotations.AfterInvocation;
-import io.github.libxposed.api.annotations.XposedHooker;
+import io.github.libinstalld.api.InstalldInterface;
+import io.github.libinstalld.api.annotations.AInvocation;
+import io.github.libinstalld.api.annotations.InstalldHooker;
 
-@XposedHooker
-public class OpenDexFileHooker implements XposedInterface.Hooker {
+@InstalldHooker
+public class OpenDexFileHooker implements InstalldInterface.Hooker {
 
-    @AfterInvocation
-    public static void afterHookedMethod(XposedInterface.AfterHookCallback callback) {
+    @AInvocation
+    public static void afterHookedMethod(InstalldInterface.AfterHookCallback callback) {
         ClassLoader classLoader = null;
         for (var arg : callback.getArgs()) {
             if (arg instanceof ClassLoader) {

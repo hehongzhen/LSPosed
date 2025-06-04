@@ -49,14 +49,14 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.XposedInit;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
-import io.github.libxposed.api.XposedInterface;
-import io.github.libxposed.api.XposedModuleInterface;
-import io.github.libxposed.api.annotations.AfterInvocation;
-import io.github.libxposed.api.annotations.XposedHooker;
+import io.github.libinstalld.api.InstalldInterface;
+import io.github.libinstalld.api.InstalldModuleInterface;
+import io.github.libinstalld.api.annotations.AInvocation;
+import io.github.libinstalld.api.annotations.InstalldHooker;
 
 @SuppressLint("BlockedPrivateApi")
-@XposedHooker
-public class LoadedApkCreateCLHooker implements XposedInterface.Hooker {
+@InstalldHooker
+public class LoadedApkCreateCLHooker implements InstalldInterface.Hooker {
     private final static Field defaultClassLoaderField;
 
     private final static Set<LoadedApk> loadedApks = ConcurrentHashMap.newKeySet();
@@ -77,8 +77,8 @@ public class LoadedApkCreateCLHooker implements XposedInterface.Hooker {
         loadedApks.add(loadedApk);
     }
 
-    @AfterInvocation
-    public static void afterHookedMethod(XposedInterface.AfterHookCallback callback) {
+    @AInvocation
+    public static void afterHookedMethod(InstalldInterface.AfterHookCallback callback) {
         LoadedApk loadedApk = (LoadedApk) callback.getThisObject();
 
         if (callback.getArgs()[0] != null || !loadedApks.contains(loadedApk)) {
@@ -130,7 +130,7 @@ public class LoadedApkCreateCLHooker implements XposedInterface.Hooker {
             Hookers.logD("Call handleLoadedPackage: packageName=" + lpparam.packageName + " processName=" + lpparam.processName + " isFirstPackage=" + isFirstPackage + " classLoader=" + lpparam.classLoader + " appInfo=" + lpparam.appInfo);
             XC_LoadPackage.callAll(lpparam);
 
-            LSPosedContext.callOnPackageLoaded(new XposedModuleInterface.PackageLoadedParam() {
+            LSPosedContext.callOnPackageLoaded(new InstalldModuleInterface.PackageLoadedParam() {
                 @NonNull
                 @Override
                 public String getPackageName() {

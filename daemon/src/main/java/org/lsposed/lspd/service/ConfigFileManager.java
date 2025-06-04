@@ -36,7 +36,7 @@ import android.system.OsConstants;
 
 import androidx.annotation.Nullable;
 
-import org.lsposed.daemon.BuildConfig;
+import org.installd.keep.BuildConfig;
 import org.lsposed.lspd.models.PreLoadedApk;
 import org.lsposed.lspd.util.InstallerVerifier;
 import org.lsposed.lspd.util.Utils;
