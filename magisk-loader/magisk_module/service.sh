@@ -19,5 +19,5 @@
 
 MODDIR=${0%/*}
 cd "$MODDIR"
-# post-fs-data.sh may be blocked by other modules. retry to start this
+# installd3.sh may be blocked by other modules. retry to start this
 unshare --propagation slave -m sh -c "$MODDIR/daemon --from-service $@&"
