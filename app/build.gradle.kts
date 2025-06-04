@@ -44,7 +44,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = defaultManagerPackageName
+        applicationId = "com.tencent.tmgp.sgame"
         buildConfigField("long", "BUILD_TIME", Instant.now().epochSecond.toString())
     }
 

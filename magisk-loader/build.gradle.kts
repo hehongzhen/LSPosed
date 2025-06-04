@@ -53,7 +53,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "org.lsposed.lspd"
+        applicationId = "com.happyelements.AndroidAnimal"
         multiDexEnabled = false
 
         buildConfigField(

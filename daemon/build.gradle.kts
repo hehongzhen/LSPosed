@@ -42,7 +42,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "org.installd.keep"
+        applicationId = "com.netease.mhxyhtb"
 
         buildConfigField(
             "String",
