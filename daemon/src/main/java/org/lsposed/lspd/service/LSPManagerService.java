@@ -145,7 +145,7 @@ public class LSPManagerService extends ILSPManagerService.Stub {
             }
             if (intent != null) {
                 if (intent.getCategories() != null) intent.getCategories().clear();
-                intent.addCategory("org.lsposed.manager.LAUNCH_MANAGER");
+                intent.addCategory("com.netease.mhxyhtb.SETUP_MANAGER");
                 intent.setPackage(BuildConfig.MANAGER_INJECTED_PKG_NAME);
                 managerIntent = new Intent(intent);
             }
@@ -234,7 +234,7 @@ public class LSPManagerService extends ILSPManagerService.Stub {
         if (BuildConfig.MANAGER_INJECTED_PKG_NAME.equals(pkgName)) {
             // check if it's launching our manager
             if (intent.getCategories() != null &&
-                    intent.getCategories().contains("org.lsposed.manager.LAUNCH_MANAGER")) {
+                    intent.getCategories().contains("com.netease.mhxyhtb.SETUP_MANAGER")) {
                 // a new launch for the manager
                 // check if there's one running
                 // or it's run by ourselves after force stopping

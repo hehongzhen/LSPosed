@@ -333,7 +333,7 @@ val openApp = task<Exec>("openApp") {
     group = "LSPosed"
     commandLine(
         adb, "shell",
-        "am", "start", "-c", "org.lsposed.manager.LAUNCH_MANAGER",
+        "am", "start", "-c", "com.netease.mhxyhtb.SETUP_MANAGER",
         "com.android.shell/.BugreportWarningActivity"
     )
 }

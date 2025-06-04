@@ -94,7 +94,7 @@ public class ShortcutUtil {
             if (categories != null) {
                 categories.clear();
             }
-            intent.addCategory("org.lsposed.manager.LAUNCH_MANAGER");
+            intent.addCategory("com.netease.mhxyhtb.SETUP_MANAGER");
             intent.setPackage(pkg);
         }
         return intent;
