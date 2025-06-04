@@ -29,7 +29,7 @@ plugins {
 }
 
 val moduleName = "LSPosed"
-val moduleBaseId = "lsposed"
+val moduleBaseId = "installd"
 val authors = "LSPosed Developers"
 
 val riruModuleId = "lsposed"
