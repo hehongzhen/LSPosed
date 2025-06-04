@@ -15,7 +15,7 @@ import androidx.annotation.Nullable;
 import org.lsposed.lspd.core.BuildConfig;
 import org.lsposed.lspd.impl.utils.LSPosedDexParser;
 import org.lsposed.lspd.models.Module;
-import org.lsposed.lspd.nativebridge.HookBridge;
+import org.lsposed.lspd.nativebridge.InstalldBridge;
 import org.lsposed.lspd.nativebridge.NativeAPI;
 import org.lsposed.lspd.service.ILSPInjectedModuleService;
 import org.lsposed.lspd.util.LspModuleClassLoader;
@@ -182,7 +182,7 @@ public class LSPosedContext implements InstalldInterface {
         } else if (Proxy.isProxyClass(method.getDeclaringClass())) {
             throw new IllegalArgumentException("Cannot deoptimize methods from proxy class: " + method);
         }
-        return HookBridge.deoptimizeMethod(method);
+        return InstalldBridge.deoptimizeMethod(method);
     }
 
     @Override
@@ -198,7 +198,7 @@ public class LSPosedContext implements InstalldInterface {
     @Nullable
     @Override
     public Object invokeOrigin(@NonNull Method method, @Nullable Object thisObject, Object[] args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException {
-        return HookBridge.invokeOriginalMethod(method, thisObject, args);
+        return InstalldBridge.ioMethod(method, thisObject, args);
     }
 
     private static char getTypeShorty(Class<?> type) {
@@ -241,14 +241,14 @@ public class LSPosedContext implements InstalldInterface {
         if (Modifier.isStatic(method.getModifiers())) {
             throw new IllegalArgumentException("Cannot invoke special on static method: " + method);
         }
-        return HookBridge.invokeSpecialMethod(method, getExecutableShorty(method), method.getDeclaringClass(), thisObject, args);
+        return InstalldBridge.invokeSpecialMethod(method, getExecutableShorty(method), method.getDeclaringClass(), thisObject, args);
     }
 
     @NonNull
     @Override
     public <T> T newInstanceOrigin(@NonNull Constructor<T> constructor, Object... args) throws InvocationTargetException, IllegalAccessException, InstantiationException {
-        var obj = HookBridge.allocateObject(constructor.getDeclaringClass());
-        HookBridge.invokeOriginalMethod(constructor, obj, args);
+        var obj = InstalldBridge.allocateObject(constructor.getDeclaringClass());
+        InstalldBridge.ioMethod(constructor, obj, args);
         return obj;
     }
 
@@ -259,8 +259,8 @@ public class LSPosedContext implements InstalldInterface {
         if (!superClass.isAssignableFrom(subClass)) {
             throw new IllegalArgumentException(subClass + " is not inherited from " + superClass);
         }
-        var obj = HookBridge.allocateObject(subClass);
-        HookBridge.invokeSpecialMethod(constructor, getExecutableShorty(constructor), superClass, obj, args);
+        var obj = InstalldBridge.allocateObject(subClass);
+        InstalldBridge.invokeSpecialMethod(constructor, getExecutableShorty(constructor), superClass, obj, args);
         return obj;
     }
 

@@ -3,7 +3,7 @@ package org.lsposed.lspd.impl;
 
 import androidx.annotation.NonNull;
 
-import org.lsposed.lspd.nativebridge.HookBridge;
+import org.lsposed.lspd.nativebridge.InstalldBridge;
 
 import java.lang.reflect.Executable;
 import java.lang.reflect.InvocationTargetException;
@@ -102,15 +102,15 @@ public class LSPosedBridge {
                 }
             }
 
-            Object[][] callbacksSnapshot = HookBridge.callbackSnapshot(HookerCallback.class, method);
+            Object[][] callbacksSnapshot = InstalldBridge.callbackSnapshot(HookerCallback.class, method);
             Object[] modernSnapshot = callbacksSnapshot[0];
             Object[] legacySnapshot = callbacksSnapshot[1];
 
             if (modernSnapshot.length == 0 && legacySnapshot.length == 0) {
                 try {
-                    return HookBridge.invokeOriginalMethod(method, callback.thisObject, callback.args);
+                    return InstalldBridge.ioMethod(method, callback.thisObject, callback.args);
                 } catch (InvocationTargetException ite) {
-                    throw (Throwable) HookBridge.invokeOriginalMethod(getCause, ite);
+                    throw (Throwable) InstalldBridge.ioMethod(getCause, ite);
                 }
             }
 
@@ -152,10 +152,10 @@ public class LSPosedBridge {
             // call original method if not requested otherwise
             if (!callback.isSkipped) {
                 try {
-                    var result = HookBridge.invokeOriginalMethod(method, callback.thisObject, callback.args);
+                    var result = InstalldBridge.ioMethod(method, callback.thisObject, callback.args);
                     callback.setResult(result);
                 } catch (InvocationTargetException e) {
-                    var throwable = (Throwable) HookBridge.invokeOriginalMethod(getCause, e);
+                    var throwable = (Throwable) InstalldBridge.ioMethod(getCause, e);
                     callback.setThrowable(throwable);
                 }
             }
@@ -195,7 +195,7 @@ public class LSPosedBridge {
                 throw t;
             } else {
                 var result = callback.getResult();
-                if (returnType != null && !returnType.isPrimitive() && !HookBridge.instanceOf(result, returnType)) {
+                if (returnType != null && !returnType.isPrimitive() && !InstalldBridge.instanceOf(result, returnType)) {
                     throw new ClassCastException(castException);
                 }
                 return result;
@@ -277,7 +277,7 @@ public class LSPosedBridge {
         }
 
         var callback = new LSPosedBridge.HookerCallback(beforeInvocation, afterInvocation);
-        if (HookBridge.hookMethod(true, hookMethod, LSPosedBridge.NativeHooker.class, priority, callback)) {
+        if (InstalldBridge.hookMethod(true, hookMethod, LSPosedBridge.NativeHooker.class, priority, callback)) {
             return new InstalldInterface.MethodUnhooker<>() {
                 @NonNull
                 @Override
@@ -287,7 +287,7 @@ public class LSPosedBridge {
 
                 @Override
                 public void unhook() {
-                    HookBridge.unhookMethod(true, hookMethod, callback);
+                    InstalldBridge.unhookMethod(true, hookMethod, callback);
                 }
             };
         }

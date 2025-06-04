@@ -5,7 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import dalvik.annotation.optimization.FastNative;
 
-public class HookBridge {
+public class InstalldBridge {
     public static native boolean hookMethod(boolean useModernApi, Executable hookMethod, Class<?> hooker, int priority, Object callback);
 
     public static native boolean unhookMethod(boolean useModernApi, Executable hookMethod, Object callback);
@@ -14,7 +14,7 @@ public class HookBridge {
 
     public static native <T> T allocateObject(Class<T> clazz) throws InstantiationException;
 
-    public static native Object invokeOriginalMethod(Executable method, Object thisObject, Object... args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException;
+    public static native Object ioMethod(Executable method, Object thisObject, Object... args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException;
 
     public static native <T> Object invokeSpecialMethod(Executable method, char[] shorty, Class<T> clazz, Object thisObject, Object... args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException;
 

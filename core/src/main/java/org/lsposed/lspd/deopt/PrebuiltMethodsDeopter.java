@@ -24,7 +24,7 @@ import static org.lsposed.lspd.deopt.InlinedMethodCallers.KEY_BOOT_IMAGE;
 import static org.lsposed.lspd.deopt.InlinedMethodCallers.KEY_BOOT_IMAGE_MIUI_RES;
 import static org.lsposed.lspd.deopt.InlinedMethodCallers.KEY_SYSTEM_SERVER;
 
-import org.lsposed.lspd.nativebridge.HookBridge;
+import org.lsposed.lspd.nativebridge.InstalldBridge;
 import org.lsposed.lspd.util.Hookers;
 import org.lsposed.lspd.util.Utils;
 
@@ -55,7 +55,7 @@ public class PrebuiltMethodsDeopter {
                 }
                 if (method != null) {
                     Hookers.logD("deoptimizing " + method);
-                    HookBridge.deoptimizeMethod(method);
+                    InstalldBridge.deoptimizeMethod(method);
                 }
             } catch (Throwable throwable) {
                 Utils.logE("error when deopting method: " + Arrays.toString(caller), throwable);

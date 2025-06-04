@@ -3,7 +3,7 @@ package org.lsposed.lspd.hooker;
 import android.os.Build;
 
 import org.lsposed.lspd.impl.LSPosedBridge;
-import org.lsposed.lspd.nativebridge.HookBridge;
+import org.lsposed.lspd.nativebridge.InstalldBridge;
 
 import io.github.libinstalld.api.InstalldInterface;
 import io.github.libinstalld.api.annotations.AInvocation;
@@ -25,7 +25,7 @@ public class OpenDexFileHooker implements InstalldInterface.Hooker {
         }
         while (classLoader != null) {
             if (classLoader == LSPosedBridge.class.getClassLoader()) {
-                HookBridge.setTrusted(callback.getResult());
+                InstalldBridge.setTrusted(callback.getResult());
                 return;
             } else {
                 classLoader = classLoader.getParent();

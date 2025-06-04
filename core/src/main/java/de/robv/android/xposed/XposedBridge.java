@@ -26,7 +26,7 @@ import android.content.res.TypedArray;
 
 import org.lsposed.lspd.impl.LSPosedBridge;
 import org.lsposed.lspd.impl.LSPosedHookCallback;
-import org.lsposed.lspd.nativebridge.HookBridge;
+import org.lsposed.lspd.nativebridge.InstalldBridge;
 import org.lsposed.lspd.nativebridge.ResourcesHook;
 
 import java.lang.reflect.AccessibleObject;
@@ -170,7 +170,7 @@ public final class XposedBridge {
         } else if (Proxy.isProxyClass(deoptimizedMethod.getDeclaringClass())) {
             throw new IllegalArgumentException("Cannot deoptimize methods from proxy class: " + deoptimizedMethod);
         }
-        HookBridge.deoptimizeMethod((Executable) deoptimizedMethod);
+        InstalldBridge.deoptimizeMethod((Executable) deoptimizedMethod);
     }
 
     /**
@@ -202,7 +202,7 @@ public final class XposedBridge {
             throw new IllegalArgumentException("callback should not be null!");
         }
 
-        if (!HookBridge.hookMethod(false, (Executable) hookMethod, LSPosedBridge.NativeHooker.class, callback.priority, callback)) {
+        if (!InstalldBridge.hookMethod(false, (Executable) hookMethod, LSPosedBridge.NativeHooker.class, callback.priority, callback)) {
             log("Failed to hook " + hookMethod);
             return null;
         }
@@ -221,7 +221,7 @@ public final class XposedBridge {
     @Deprecated
     public static void unhookMethod(Member hookMethod, XC_MethodHook callback) {
         if (hookMethod instanceof Executable) {
-            HookBridge.unhookMethod(false, (Executable) hookMethod, callback);
+            InstalldBridge.unhookMethod(false, (Executable) hookMethod, callback);
         }
     }
 
@@ -310,7 +310,7 @@ public final class XposedBridge {
      *                                   or converted by a widening conversion to the corresponding parameter type
      * @throws InvocationTargetException if an exception was thrown by the invoked method
      */
-    public static Object invokeOriginalMethod(Member method, Object thisObject, Object[] args)
+    public static Object ioMethod(Member method, Object thisObject, Object[] args)
             throws Throwable {
         if (args == null) {
             args = EMPTY_ARRAY;
@@ -320,7 +320,7 @@ public final class XposedBridge {
             throw new IllegalArgumentException("method must be of type Method or Constructor");
         }
 
-        return HookBridge.invokeOriginalMethod((Executable) method, thisObject, args);
+        return InstalldBridge.ioMethod((Executable) method, thisObject, args);
     }
 
     /**
