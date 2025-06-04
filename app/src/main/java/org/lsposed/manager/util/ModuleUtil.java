@@ -26,7 +26,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -310,7 +309,6 @@ public final class ModuleUtil {
                         scopeList = Collections.emptyList();
                     }
                 } catch (IOException | OutOfMemoryError e) {
-                    Log.e(App.TAG, "Error while closing modern module APK", e);
                 }
                 this.minVersion = minVersion;
                 this.targetVersion = targetVersion;

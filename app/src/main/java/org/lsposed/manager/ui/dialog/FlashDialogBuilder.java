@@ -26,7 +26,6 @@ import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.ParcelFileDescriptor;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -131,7 +130,6 @@ public class FlashDialogBuilder extends BlurBehindDialogBuilder {
 
             reader.close();
         } catch (IOException e) {
-            Log.e(TAG, "flash", e);
             view.post(() -> textView.append("\n\n" + e.getMessage()));
             rootView.fullScroll(View.FOCUS_DOWN);
         }

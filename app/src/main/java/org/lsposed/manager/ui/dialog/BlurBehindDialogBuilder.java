@@ -23,7 +23,6 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
-import android.util.Log;
 import android.view.SurfaceControl;
 import android.view.View;
 import android.view.Window;
@@ -114,11 +113,9 @@ public class BlurBehindDialogBuilder extends MaterialAlertDialogBuilder {
                             }
                             transaction.apply();
                         } catch (Throwable t) {
-                            Log.e(App.TAG, "Blur behind dialog builder", t);
                         }
                     });
                 } catch (Throwable t) {
-                    Log.e(App.TAG, "Blur behind dialog builder", t);
                 }
                 view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
                     @Override
@@ -142,7 +139,6 @@ public class BlurBehindDialogBuilder extends MaterialAlertDialogBuilder {
             Method get = c.getMethod("getBoolean", String.class, boolean.class);
             value = (boolean) get.invoke(c, key, defaultValue);
         } catch (Exception e) {
-            Log.e(App.TAG, "Blur behind dialog builder get system property", e);
         }
         return value;
     }

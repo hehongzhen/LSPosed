@@ -1,6 +1,5 @@
 package org.lsposed.lspd.hooker;
 
-import android.util.Log;
 
 import org.lsposed.lspd.impl.LSPosedBridge;
 
@@ -15,7 +14,6 @@ public class CrashDumpHooker implements XposedInterface.Hooker {
     public static void beforeHookedMethod(XposedInterface.BeforeHookCallback callback) {
         try {
             var e = (Throwable) callback.getArgs()[0];
-            LSPosedBridge.log("Crash unexpectedly: " + Log.getStackTraceString(e));
         } catch (Throwable ignored) {
         }
     }

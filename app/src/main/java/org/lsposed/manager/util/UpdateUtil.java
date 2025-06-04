@@ -19,7 +19,6 @@
 
 package org.lsposed.manager.util;
 
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -64,13 +63,11 @@ public class UpdateUtil {
                         checkAssets(assets.getAsJsonObject(), notes, api.toLowerCase(Locale.ROOT));
                     }
                 } catch (Throwable t) {
-                    Log.e(App.TAG, t.getMessage(), t);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.e(App.TAG, "loadRemoteVersion: " + e.getMessage());
                 var pref = App.getPreferences();
                 if (pref.getBoolean("checked", false)) return;
                 pref.edit().putBoolean("checked", true).apply();
@@ -134,7 +131,6 @@ public class UpdateUtil {
                 sink.writeAll(source);
             }
         } catch (IOException e) {
-            Log.e(App.TAG, "downloadNewZipSync: " + e.getMessage());
             return null;
         }
         return zip;

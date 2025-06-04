@@ -68,7 +68,6 @@ public class LoadedApkCtorHooker implements XposedInterface.Hooker {
             // OnePlus magic...
             if (Log.getStackTraceString(new Throwable()).
                     contains("android.app.ActivityThread$ApplicationThread.schedulePreload")) {
-                Hookers.logD("LoadedApk#<init> maybe oneplus's custom opt, skip");
                 return;
             }
 

@@ -1,6 +1,5 @@
 package org.lsposed.lspd.impl;
 
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -54,12 +53,10 @@ public class LSPosedBridge {
     }
 
     public static void log(String text) {
-        Log.i(TAG, text);
     }
 
     public static void log(Throwable t) {
-        String logStr = Log.getStackTraceString(t);
-        Log.e(TAG, logStr);
+
     }
 
     public static class NativeHooker<T extends Executable> {

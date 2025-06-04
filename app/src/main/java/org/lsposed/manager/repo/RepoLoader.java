@@ -21,7 +21,6 @@
 package org.lsposed.manager.repo;
 
 import android.content.res.Resources;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -109,7 +108,6 @@ public class RepoLoader {
                             Files.write(repoFile, bodyString.getBytes(StandardCharsets.UTF_8));
                             loadLocalData(false);
                         } catch (Throwable t) {
-                            Log.e(App.TAG, Log.getStackTraceString(t));
                             for (RepoListener listener : listeners) {
                                 listener.onThrowable(t);
                             }
@@ -118,7 +116,6 @@ public class RepoLoader {
                 }
             }
         } catch (Throwable e) {
-            Log.e(App.TAG, "load remote data", e);
             for (RepoListener listener : listeners) {
                 listener.onThrowable(e);
             }
@@ -149,7 +146,6 @@ public class RepoLoader {
             updateLatestVersion(repoModules, channel);
             onlineModules = modules;
         } catch (Throwable t) {
-            Log.e(App.TAG, Log.getStackTraceString(t));
             for (RepoListener listener : listeners) {
                 listener.onThrowable(t);
             }
@@ -251,7 +247,6 @@ public class RepoLoader {
         App.getOkHttpClient().newCall(new Request.Builder().url(String.format(repoUrl + "module/%s.json", packageName)).build()).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.e(App.TAG, call.request().url() + e.getMessage());
                 if (repoUrl.equals(originRepoUrl)) {
                     repoUrl = backupRepoUrl;
                     loadRemoteReleases(packageName);
@@ -280,7 +275,6 @@ public class RepoLoader {
                                 listener.onModuleReleasesLoaded(module);
                             }
                         } catch (Throwable t) {
-                            Log.e(App.TAG, Log.getStackTraceString(t));
                             for (RepoListener listener : listeners) {
                                 listener.onThrowable(t);
                             }
@@ -317,7 +311,6 @@ public class RepoLoader {
         }
 
         default void onThrowable(Throwable t) {
-            Log.e(App.TAG, "load repo failed", t);
         }
     }
 }

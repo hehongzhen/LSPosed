@@ -39,7 +39,6 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.Process;
 import android.util.ArrayMap;
-import android.util.Log;
 
 import org.lsposed.lspd.impl.LSPosedContext;
 import org.lsposed.lspd.models.PreLoadedApk;
@@ -77,7 +76,6 @@ public final class XposedInit {
         deoptResourceMethods();
 
         if (!ResourcesHook.initXResourcesNative()) {
-            Log.e(TAG, "Cannot hook resources");
             disableResources = true;
             return;
         }
@@ -260,12 +258,10 @@ public final class XposedInit {
         var count = 0;
         for (var moduleClassName : moduleClassNames) {
             try {
-                Log.i(TAG, "  Loading class " + moduleClassName);
 
                 Class<?> moduleClass = mcl.loadClass(moduleClassName);
 
                 if (!IXposedMod.class.isAssignableFrom(moduleClass)) {
-                    Log.e(TAG, "    This class doesn't implement any sub-interface of IXposedMod, skipping it");
                     continue;
                 }
 
@@ -290,7 +286,6 @@ public final class XposedInit {
                     count++;
                 }
             } catch (Throwable t) {
-                Log.e(TAG, "    Failed to load class " + moduleClassName, t);
             }
         }
         return count > 0;
@@ -301,7 +296,6 @@ public final class XposedInit {
      * in <code>assets/xposed_init</code>.
      */
     private static boolean loadModule(String name, String apk, PreLoadedApk file) {
-        Log.i(TAG, "Loading legacy module " + name + " from " + apk);
 
         var sb = new StringBuilder();
         var abis = Process.is64Bit() ? Build.SUPPORTED_64_BIT_ABIS : Build.SUPPORTED_32_BIT_ABIS;
@@ -315,10 +309,6 @@ public final class XposedInit {
 
         try {
             if (mcl.loadClass(XposedBridge.class.getName()).getClassLoader() != initLoader) {
-                Log.e(TAG, "  Cannot load module: " + name);
-                Log.e(TAG, "  The Xposed API classes are compiled into the module's APK.");
-                Log.e(TAG, "  This may cause strange issues and must be fixed by the module developer.");
-                Log.e(TAG, "  For details, see: https://api.xposed.info/using.html");
                 return false;
             }
         } catch (ClassNotFoundException ignored) {

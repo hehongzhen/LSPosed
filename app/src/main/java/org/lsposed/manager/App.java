@@ -37,7 +37,6 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.system.Os;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -83,7 +82,6 @@ public class App extends Application {
             FileUtils.copy(input, result);
             return result.toString(StandardCharsets.UTF_8.name());
         } catch (IOException e) {
-            Log.e(App.TAG, "read webview HTML", e);
             return "<html dir\"@dir@\"><body>@body@</body></html>";
         }
     }
@@ -224,7 +222,6 @@ public class App extends Application {
             @Override
             public void onReceive(Context context, Intent inIntent) {
                 var intent = (Intent) inIntent.getParcelableExtra(Intent.EXTRA_INTENT);
-                Log.d(TAG, "onReceive: " + intent);
                 switch (intent.getAction()) {
                     case Intent.ACTION_PACKAGE_ADDED, Intent.ACTION_PACKAGE_CHANGED, Intent.ACTION_PACKAGE_FULLY_REMOVED, Intent.ACTION_UID_REMOVED -> {
                         var userId = intent.getIntExtra(Intent.EXTRA_USER, 0);

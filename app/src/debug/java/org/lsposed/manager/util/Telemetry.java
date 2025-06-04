@@ -54,7 +54,6 @@ public class Telemetry {
             assert channel != null;
             channel.addListener(patchDeviceListener);
         } catch (ReflectiveOperationException e) {
-            android.util.Log.e(App.TAG, "add listener", e);
         }
     }
 
@@ -66,7 +65,6 @@ public class Telemetry {
             assert handler != null;
             handler.post(Telemetry::addPatchDeviceListener);
         } catch (ReflectiveOperationException e) {
-            android.util.Log.e(App.TAG, "patch device", e);
         }
     }
 
