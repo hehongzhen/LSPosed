@@ -9,7 +9,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.UserHandle;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -52,7 +51,6 @@ public class FakeContext extends ContextWrapper {
             if (systemApplicationInfo == null)
                 systemApplicationInfo = PackageService.getApplicationInfo("android", 0, 0);
         } catch (Throwable e) {
-            Log.e(TAG, "getApplicationInfo", e);
         }
         return systemApplicationInfo;
     }

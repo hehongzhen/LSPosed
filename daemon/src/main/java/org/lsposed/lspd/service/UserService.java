@@ -28,7 +28,6 @@ import android.os.IBinder;
 import android.os.IUserManager;
 import android.os.RemoteException;
 import android.os.ServiceManager;
-import android.util.Log;
 
 import org.lsposed.lspd.util.Utils;
 
@@ -41,7 +40,6 @@ public class UserService {
     private static final IBinder.DeathRecipient recipient = new IBinder.DeathRecipient() {
         @Override
         public void binderDied() {
-            Log.w(TAG, "um is dead");
             binder.unlinkToDeath(this, 0);
             binder = null;
             um = null;
@@ -60,7 +58,6 @@ public class UserService {
             try {
                 binder.linkToDeath(recipient, 0);
             } catch (RemoteException e) {
-                Log.e(TAG, Log.getStackTraceString(e));
             }
             um = IUserManager.Stub.asInterface(binder);
         }

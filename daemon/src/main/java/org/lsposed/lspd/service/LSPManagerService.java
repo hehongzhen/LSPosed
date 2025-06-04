@@ -43,7 +43,6 @@ import android.os.SELinux;
 import android.os.SystemProperties;
 import android.system.ErrnoException;
 import android.system.Os;
-import android.util.Log;
 import android.view.IWindowManager;
 
 import androidx.annotation.NonNull;
@@ -96,7 +95,6 @@ public class LSPManagerService extends ILSPManagerService.Stub {
                     ActivityManagerService.bindService(intent, intent.getType(), connection, BIND_AUTO_CREATE, "android", 0);
                 }
             } catch (Throwable e) {
-                Log.e(TAG, "manager guard", e);
                 guard = null;
             }
         }
@@ -107,7 +105,6 @@ public class LSPManagerService extends ILSPManagerService.Stub {
                 binder.unlinkToDeath(this, 0);
                 ActivityManagerService.unbindService(connection);
             } catch (Throwable e) {
-                Log.e(TAG, "manager guard", e);
             }
             guard = null;
         }
@@ -153,7 +150,6 @@ public class LSPManagerService extends ILSPManagerService.Stub {
                 managerIntent = new Intent(intent);
             }
         } catch (RemoteException e) {
-            Log.e(TAG, "get Intent", e);
         }
         return managerIntent;
     }
@@ -184,7 +180,6 @@ public class LSPManagerService extends ILSPManagerService.Stub {
                     null, -1, null, true, false,
                     0);
         } catch (RemoteException t) {
-            Log.e(TAG, "Broadcast to manager failed: ", t);
         }
     }
 
@@ -199,7 +194,6 @@ public class LSPManagerService extends ILSPManagerService.Stub {
         try {
             Os.chown(f.getAbsolutePath(), BuildConfig.MANAGER_INJECTED_UID, BuildConfig.MANAGER_INJECTED_UID);
         } catch (ErrnoException e) {
-            Log.e(TAG, "chown of webview", e);
         }
         if (f.isDirectory()) {
             for (var g : f.listFiles()) {
@@ -218,7 +212,6 @@ public class LSPManagerService extends ILSPManagerService.Stub {
                 ensureWebViewPermission(cacheDir);
             }
         } catch (Throwable e) {
-            Log.w(TAG, "cannot ensure webview dir", e);
         }
     }
 
@@ -239,18 +232,15 @@ public class LSPManagerService extends ILSPManagerService.Stub {
     synchronized boolean preStartManager(String pkgName, Intent intent, boolean doResume) {
         // first, check if it's our target app, if not continue the start
         if (BuildConfig.MANAGER_INJECTED_PKG_NAME.equals(pkgName)) {
-            Log.d(TAG, "starting target app of parasitic manager");
             // check if it's launching our manager
             if (intent.getCategories() != null &&
                     intent.getCategories().contains("org.lsposed.manager.LAUNCH_MANAGER")) {
-                Log.d(TAG, "requesting launch of manager");
                 // a new launch for the manager
                 // check if there's one running
                 // or it's run by ourselves after force stopping
                 var snapshot = guardSnapshot();
                 if ((RANDOM_UUID != null && intent.getCategories().contains(RANDOM_UUID)) ||
                         (snapshot != null && snapshot.isAlive() && snapshot.uid == BuildConfig.MANAGER_INJECTED_UID)) {
-                    Log.d(TAG, "manager is still running or is on its way");
                     // there's one running parasitic manager
                     // or it's run by ourself after killing, resume it
                     if (doResume) {
@@ -258,14 +248,12 @@ public class LSPManagerService extends ILSPManagerService.Stub {
                         try {
                             ActivityManagerService.startActivityAsUserWithFeature("android", null, intent, intent.getType(), null, null, 0, 0, null, null, 0);
                         } catch (Throwable e) {
-                            Log.w(TAG, "resume manager", e);
                         }
                     }
                     return true;
                 } else if (pendingManager) {
                     // Check the flag in case new launch comes before finishing
                     // the previous one to avoid racing.
-                    Log.d(TAG, "manager is still on its way when new launch comes, skipping");
                     return false;
                 } else {
                     // new parasitic manager launch, set the flag and kill
@@ -277,20 +265,17 @@ public class LSPManagerService extends ILSPManagerService.Stub {
                         ensureWebViewPermission();
                         stopAndStartActivity(pkgName, intent, true);
                     });
-                    Log.d(TAG, "requested to launch manager");
                     return false;
                 }
             } else if (pendingManager) {
                 // there's still parasitic manager, cancel a normal launch until
                 // the parasitic manager is launch
-                Log.d(TAG, "previous request is not yet done");
                 return false;
             }
             // this is a normal launch of the target app
             // send it to the manager and let it to restart the package
             // if the manager is running
             // or normally restart without injecting
-            Log.d(TAG, "launching the target app normally");
             return true;
         }
         return true;
@@ -299,16 +284,13 @@ public class LSPManagerService extends ILSPManagerService.Stub {
     synchronized void stopAndStartActivity(String packageName, Intent intent, boolean addUUID) {
         try {
             ActivityManagerService.forceStopPackage(packageName, 0);
-            Log.d(TAG, "stopped old package");
             if (addUUID) {
                 intent = new Intent(intent);
                 RANDOM_UUID = UUID.randomUUID().toString();
                 intent.addCategory(RANDOM_UUID);
             }
             ActivityManagerService.startActivityAsUserWithFeature("android", null, intent, intent.getType(), null, null, 0, 0, null, null, 0);
-            Log.d(TAG, "relaunching");
         } catch (RemoteException e) {
-            Log.e(TAG, "stop and start activity", e);
         }
     }
 
@@ -321,7 +303,6 @@ public class LSPManagerService extends ILSPManagerService.Stub {
         // and thus reset the pending flag and mark its pid
         pendingManager = false;
         managerPid = pid;
-        Log.d(TAG, "starting injected manager: pid = " + pid + " uid = " + uid + " processName = " + processName);
         return true;
     }
 
@@ -461,7 +442,6 @@ public class LSPManagerService extends ILSPManagerService.Stub {
                 return false;
             }
         } catch (InterruptedException | ReflectiveOperationException e) {
-            Log.e(TAG, e.getMessage(), e);
             return false;
         }
     }
@@ -491,7 +471,6 @@ public class LSPManagerService extends ILSPManagerService.Stub {
                 return PackageService.installExistingPackageAsUser(packageName, userId);
             else return PackageService.INSTALL_FAILED_INTERNAL_ERROR;
         } catch (Throwable e) {
-            Log.w(TAG, "install existing package as user: ", e);
             return PackageService.INSTALL_FAILED_INTERNAL_ERROR;
         }
     }
@@ -549,11 +528,9 @@ public class LSPManagerService extends ILSPManagerService.Stub {
                         contentProvider.call("android", "settings", "PUT_global", "show_hidden_icon_apps_enabled", args);
                     }
                 } catch (NoSuchMethodError e) {
-                    Log.w(TAG, "setHiddenIcon: ", e);
                 }
             }
         } catch (Throwable e) {
-            Log.w(TAG, "setHiddenIcon: ", e);
         }
     }
 
@@ -595,7 +572,6 @@ public class LSPManagerService extends ILSPManagerService.Stub {
                 fdw.write("! Timeout, abort\n".getBytes());
             }
         } catch (IOException | InterruptedException | RemoteException e) {
-            Log.e(TAG, "flashZip: ", e);
         }
     }
 

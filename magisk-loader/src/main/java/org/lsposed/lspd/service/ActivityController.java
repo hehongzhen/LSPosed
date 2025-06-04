@@ -16,7 +16,6 @@ import android.os.ResultReceiver;
 import android.os.ServiceManager;
 import android.os.ShellCallback;
 import android.os.ShellCommand;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -66,7 +65,6 @@ public class ActivityController extends IActivityController.Stub {
             tmp.recycle();
             inited = true;
         } catch (Throwable e) {
-            Log.e(TAG, "Failed to init ActivityController", e);
         }
     }
 
@@ -143,7 +141,6 @@ public class ActivityController extends IActivityController.Stub {
                         }
                     }.exec((Binder) am, in.getFileDescriptor(), out.getFileDescriptor(), err.getFileDescriptor(), args, shellCallback, resultReceiver);
                 } catch (Throwable e) {
-                    Log.e(TAG, "replace shell command", e);
                 } finally {
                     if (reply != null) reply.writeNoException();
                 }
@@ -166,7 +163,6 @@ public class ActivityController extends IActivityController.Stub {
             data.writeStrongInterface(controller);
             data.writeInt(b);
         } catch (Throwable e) {
-            Log.e(TAG, "replace activity controller", e);
         } finally {
             data.setDataPosition(0);
         }
@@ -180,7 +176,6 @@ public class ActivityController extends IActivityController.Stub {
                     try {
                         args1[0] = replaceActivityController((IActivityController) args1[0]);
                     } catch (Throwable e) {
-                        Log.e(TAG, "replace activity controller", e);
                     }
                 }
                 return method.invoke(ServiceManager.getService("activity"), args1);
@@ -198,26 +193,22 @@ public class ActivityController extends IActivityController.Stub {
             myActivityControllerRunner.invoke(ctrl);
             return 0;
         } catch (Throwable e) {
-            Log.e(TAG, "run monitor", e);
             return 1;
         }
     }
 
     static private IActivityController replaceActivityController(IActivityController controller) {
-        Log.d(TAG, "android.app.IActivityManager.setActivityController is called");
         ActivityController.controller = controller;
         return getInstance();
     }
 
     @Override
     public boolean activityStarting(Intent intent, String pkg) {
-        Log.d(TAG, "activity from " + pkg + " with " + intent + " with extras " + intent.getExtras() + " is starting");
         var snapshot = BridgeService.getService();
         if (snapshot != null && BuildConfig.MANAGER_INJECTED_PKG_NAME.equals(pkg)) {
             try {
                 return snapshot.preStartManager(pkg, intent);
             } catch (Throwable e) {
-                Log.e(TAG, "request manager", e);
             }
         }
         return controller == null || controller.activityStarting(intent, pkg);

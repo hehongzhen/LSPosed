@@ -42,7 +42,6 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.provider.Telephony;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 
 import org.lsposed.daemon.BuildConfig;
 
@@ -86,18 +85,14 @@ public class LSPosedService extends ILSPosedService.Stub {
     @Override
     public ILSPApplicationService requestApplicationService(int uid, int pid, String processName, IBinder heartBeat) {
         if (Binder.getCallingUid() != 1000) {
-            Log.w(TAG, "Someone else got my binder!?");
             return null;
         }
         if (ServiceManager.getApplicationService().hasRegister(uid, pid)) {
-            Log.d(TAG, "Skipped duplicated request for uid " + uid + " pid " + pid);
             return null;
         }
         if (!ServiceManager.getManagerService().shouldStartManager(pid, uid, processName) && ConfigManager.getInstance().shouldSkipProcess(new ConfigManager.ProcessScope(processName, uid))) {
-            Log.d(TAG, "Skipped " + processName + "/" + uid);
             return null;
         }
-        Log.d(TAG, "returned service");
         return ServiceManager.requestApplicationService(uid, pid, processName, heartBeat);
     }
 
@@ -186,16 +181,13 @@ public class LSPosedService extends ILSPosedService.Stub {
         }
         boolean removed = Intent.ACTION_PACKAGE_FULLY_REMOVED.equals(intentAction) || Intent.ACTION_UID_REMOVED.equals(intentAction);
 
-        Log.d(TAG, "Package changed: uid=" + uid + " userId=" + userId + " action=" + intentAction + " isXposedModule=" + isXposedModule + " isAllUsers=" + allUsers);
 
         if (BuildConfig.DEFAULT_MANAGER_PACKAGE_NAME.equals(moduleName) && userId == 0) {
-            Log.d(TAG, "Manager updated");
             ConfigManager.getInstance().updateManager(removed);
         }
     }
 
     private void broadcastAndShowNotification(String packageName, int userId, Intent intent, boolean isXposedModule) {
-        Log.d(TAG, "package " + packageName + " changed, dispatching to manager");
         var action = intent.getAction();
         var allUsers = intent.getBooleanExtra(EXTRA_REMOVED_FOR_ALL_USERS, false);
         intent.putExtra("android.intent.extra.PACKAGES", packageName);
@@ -225,7 +217,6 @@ public class LSPosedService extends ILSPosedService.Stub {
             var am = ActivityManagerService.getActivityManager();
             if (am != null) am.setActivityController(null, false);
         } catch (RemoteException e) {
-            Log.e(TAG, "setActivityController", e);
         }
         var configManager = ConfigManager.getInstance();
         if (configManager.enableStatusNotification()) {
@@ -255,7 +246,6 @@ public class LSPosedService extends ILSPosedService.Stub {
     }
 
     private void dispatchModuleScope(Intent intent) {
-        Log.d(TAG, "dispatchModuleScope: " + intent);
         var data = intent.getData();
         var extras = intent.getExtras();
         if (extras == null || data == null) return;
@@ -298,7 +288,6 @@ public class LSPosedService extends ILSPosedService.Stub {
                     iCallback.onScopeRequestDenied(scopePackageName);
                 }
             }
-            Log.i(TAG, action + " scope " + scopePackageName + " for " + packageName + " in user " + userId);
         } catch (RemoteException e) {
             try {
                 iCallback.onScopeRequestFailed(scopePackageName, e.getMessage());
@@ -317,7 +306,6 @@ public class LSPosedService extends ILSPosedService.Stub {
                     try {
                         task.accept(intent);
                     } catch (Throwable t) {
-                        Log.e(TAG, "performReceive: ", t);
                     }
                 });
                 if (!ordered && !Objects.equals(intent.getAction(), Intent.ACTION_LOCKED_BOOT_COMPLETED))
@@ -325,7 +313,6 @@ public class LSPosedService extends ILSPosedService.Stub {
                 try {
                     ActivityManagerService.finishReceiver(this, appThread, resultCode, data, extras, false, intent.getFlags());
                 } catch (RemoteException e) {
-                    Log.e(TAG, "finish receiver", e);
                 }
             }
         };
@@ -334,7 +321,6 @@ public class LSPosedService extends ILSPosedService.Stub {
                 ActivityManagerService.registerReceiver("android", null, receiver, filter, requiredPermission, userId, flag);
             }
         } catch (RemoteException e) {
-            Log.e(TAG, "register receiver", e);
         }
     }
 
@@ -353,14 +339,12 @@ public class LSPosedService extends ILSPosedService.Stub {
         var uidFilter = new IntentFilter(Intent.ACTION_UID_REMOVED);
 
         registerReceiver(List.of(packageFilter, uidFilter), -1, this::dispatchPackageChanged);
-        Log.d(TAG, "registered package receiver");
     }
 
     private void registerConfigurationReceiver() {
         var intentFilter = new IntentFilter(Intent.ACTION_CONFIGURATION_CHANGED);
 
         registerReceiver(List.of(intentFilter), 0, this::dispatchConfigurationChanged);
-        Log.d(TAG, "registered configuration receiver");
     }
 
     private void registerSecretCodeReceiver() {
@@ -377,14 +361,12 @@ public class LSPosedService extends ILSPosedService.Stub {
         //noinspection InlinedApi
         registerReceiver(List.of(intentFilter), "android.permission.CONTROL_INCALL_EXPERIENCE",
                 0, this::dispatchSecretCodeReceive, Context.RECEIVER_EXPORTED);
-        Log.d(TAG, "registered secret code receiver");
     }
 
     private void registerBootCompleteReceiver() {
         var intentFilter = new IntentFilter(Intent.ACTION_LOCKED_BOOT_COMPLETED);
         intentFilter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
         registerReceiver(List.of(intentFilter), 0, this::dispatchBootCompleted);
-        Log.d(TAG, "registered boot receiver");
     }
 
     private void registerUserChangeReceiver() {
@@ -393,7 +375,6 @@ public class LSPosedService extends ILSPosedService.Stub {
         userFilter.addAction(ACTION_USER_REMOVED);
 
         registerReceiver(List.of(userFilter), -1, this::dispatchUserChanged);
-        Log.d(TAG, "registered user info change receiver");
     }
 
     private void registerOpenManagerReceiver() {
@@ -402,7 +383,6 @@ public class LSPosedService extends ILSPosedService.Stub {
         moduleFilter.addDataScheme("module");
 
         registerReceiver(List.of(intentFilter, moduleFilter), 0, this::dispatchOpenManager);
-        Log.d(TAG, "registered open manager receiver");
     }
 
     private void registerModuleScopeReceiver() {
@@ -410,7 +390,6 @@ public class LSPosedService extends ILSPosedService.Stub {
         intentFilter.addDataScheme("module");
 
         registerReceiver(List.of(intentFilter), 0, this::dispatchModuleScope);
-        Log.d(TAG, "registered module scope receiver");
     }
 
     private void registerUidObserver() {
@@ -442,13 +421,11 @@ public class LSPosedService extends ILSPosedService.Stub {
                 }
             }, which, HiddenApiBridge.ActivityManager_PROCESS_STATE_UNKNOWN(), null);
         } catch (RemoteException e) {
-            Log.e(TAG, "registerUidObserver", e);
         }
     }
 
     @Override
     public void dispatchSystemServerContext(IBinder appThread, IBinder activityToken, String api) {
-        Log.d(TAG, "received system context");
         this.appThread = appThread;
         ConfigManager.getInstance().setApi(api);
         ActivityManagerService.onSystemServerContext(IApplicationThread.Stub.asInterface(appThread), activityToken);
@@ -464,7 +441,6 @@ public class LSPosedService extends ILSPosedService.Stub {
 
     @Override
     public boolean preStartManager(String pkgName, Intent intent) {
-        Log.d(TAG, "checking manager intent");
         return ServiceManager.getManagerService().preStartManager(pkgName, intent, false);
     }
 }

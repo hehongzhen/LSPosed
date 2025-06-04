@@ -26,7 +26,6 @@ import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
 import android.os.Process;
 import android.os.RemoteException;
-import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
@@ -57,13 +56,11 @@ public class LSPApplicationService extends ILSPApplicationService.Stub {
             this.processName = processName;
             this.heartBeat = heartBeat;
             heartBeat.linkToDeath(this, 0);
-            Log.d(TAG, "register " + this);
             processes.put(new Pair<>(uid, pid), this);
         }
 
         @Override
         public void binderDied() {
-            Log.d(TAG, this + " is dead");
             heartBeat.unlinkToDeath(this, 0);
             processes.remove(new Pair<>(uid, pid), this);
         }
@@ -82,7 +79,6 @@ public class LSPApplicationService extends ILSPApplicationService.Stub {
 
     @Override
     public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
-        Log.d(TAG, "LSPApplicationService.onTransact: code=" + code);
         switch (code) {
             case DEX_TRANSACTION_CODE: {
                 var shm = ConfigManager.getInstance().getPreloadDex();
@@ -164,7 +160,6 @@ public class LSPApplicationService extends ILSPApplicationService.Stub {
         ProcessInfo processInfo = processes.getOrDefault(key, null);
         if (processInfo == null || uid != processInfo.uid || pid != processInfo.pid) {
             processes.remove(key, processInfo);
-            Log.w(TAG, "non-authorized: info=" + processInfo + " uid=" + uid + " pid=" + pid);
             throw new RemoteException("Not registered");
         }
         return processInfo;
