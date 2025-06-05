@@ -43,7 +43,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = true
-            proguardFiles("proguard-rules.pro")
+            proguardFiles("proguard-rules.pro", "mapping.txt")
         }
     }
 }

@@ -1,7 +1,5 @@
 package org.lsposed.lspd.util;
 
-import static de.robv.android.xposed.XposedBridge.TAG;
-
 import android.os.Build;
 import android.os.SharedMemory;
 import android.system.ErrnoException;
@@ -28,7 +26,7 @@ import hidden.ByteBufferDexClassLoader;
 import sun.misc.CompoundEnumeration;
 
 @SuppressWarnings("ConstantConditions")
-public final class LspModuleClassLoader extends ByteBufferDexClassLoader {
+public final class PathClassLoader extends ByteBufferDexClassLoader {
     private static final String zipSeparator = "!/";
     private static final List<File> systemNativeLibraryDirs =
             splitPaths(System.getProperty("java.library.path"));
@@ -44,18 +42,18 @@ public final class LspModuleClassLoader extends ByteBufferDexClassLoader {
         return result;
     }
 
-    private LspModuleClassLoader(ByteBuffer[] dexBuffers,
-                                 ClassLoader parent,
-                                 String apk) {
+    private PathClassLoader(ByteBuffer[] dexBuffers,
+                            ClassLoader parent,
+                            String apk) {
         super(dexBuffers, parent);
         this.apk = apk;
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
-    private LspModuleClassLoader(ByteBuffer[] dexBuffers,
-                                 String librarySearchPath,
-                                 ClassLoader parent,
-                                 String apk) {
+    private PathClassLoader(ByteBuffer[] dexBuffers,
+                            String librarySearchPath,
+                            ClassLoader parent,
+                            String apk) {
         super(dexBuffers, librarySearchPath, parent);
         initNativeLibraryDirs(librarySearchPath);
         this.apk = apk;
@@ -174,8 +172,7 @@ public final class LspModuleClassLoader extends ByteBufferDexClassLoader {
     @NonNull
     @Override
     public String toString() {
-        if (apk == null) return "LspModuleClassLoader[instantiating]";
-        return "LspModuleClassLoader[module=" + apk + ", " + super.toString() + "]";
+        return "dalvik.system.PathClassLoader[DexPathList[[],nativeLibraryDirectories=[/system/lib64, /system/product/lib64]]]";
     }
 
     public static ClassLoader loadApk(String apk,
@@ -189,11 +186,11 @@ public final class LspModuleClassLoader extends ByteBufferDexClassLoader {
                 return null;
             }
         }).filter(Objects::nonNull).toArray(ByteBuffer[]::new);
-        LspModuleClassLoader cl;
+        PathClassLoader cl;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            cl = new LspModuleClassLoader(dexBuffers, librarySearchPath, parent, apk);
+            cl = new PathClassLoader(dexBuffers, librarySearchPath, parent, apk);
         } else {
-            cl = new LspModuleClassLoader(dexBuffers, parent, apk);
+            cl = new PathClassLoader(dexBuffers, parent, apk);
             cl.initNativeLibraryDirs(librarySearchPath);
         }
         Arrays.stream(dexBuffers).parallel().forEach(SharedMemory::unmap);

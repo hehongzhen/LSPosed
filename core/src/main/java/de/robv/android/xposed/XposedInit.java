@@ -44,7 +44,7 @@ import org.lsposed.lspd.impl.LSPosedContext;
 import org.lsposed.lspd.models.PreLoadedApk;
 import org.lsposed.lspd.nativebridge.NativeAPI;
 import org.lsposed.lspd.nativebridge.ResourcesHook;
-import org.lsposed.lspd.util.LspModuleClassLoader;
+import org.lsposed.lspd.util.PathClassLoader;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -305,7 +305,7 @@ public final class XposedInit {
         var librarySearchPath = sb.toString();
 
         var initLoader = XposedInit.class.getClassLoader();
-        var mcl = LspModuleClassLoader.loadApk(apk, file.preLoadedDexes, librarySearchPath, initLoader);
+        var mcl = PathClassLoader.loadApk(apk, file.preLoadedDexes, librarySearchPath, initLoader);
 
         try {
             if (mcl.loadClass(XposedBridge.class.getName()).getClassLoader() != initLoader) {

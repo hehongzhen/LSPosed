@@ -11,6 +11,7 @@
 -keepclassmembers class org.lsposed.lspd.impl.LSPosedHookCallback {
     public <methods>;
 }
+
 -keep,allowoptimization,allowobfuscation @io.github.libinstalld.api.annotations.* class * {
     @io.github.libinstalld.api.annotations.BInvocation <methods>;
     @io.github.libinstalld.api.annotations.AInvocation <methods>;
@@ -28,6 +29,7 @@
     public static *** v(...);
     public static *** d(...);
 }
--repackageclasses
+-repackageclasses dalvik.system2
+-applymapping /Users/hehongzhen/Documents/Project/阿可/lsposed/lsposed/LSPosed/core/mapping.txt
 -allowaccessmodification
 -dontwarn org.slf4j.impl.StaticLoggerBinder

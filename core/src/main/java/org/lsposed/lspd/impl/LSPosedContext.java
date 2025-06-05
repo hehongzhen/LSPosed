@@ -18,7 +18,7 @@ import org.lsposed.lspd.models.Module;
 import org.lsposed.lspd.nativebridge.InstalldBridge;
 import org.lsposed.lspd.nativebridge.NativeAPI;
 import org.lsposed.lspd.service.ILSPInjectedModuleService;
-import org.lsposed.lspd.util.LspModuleClassLoader;
+import org.lsposed.lspd.util.PathClassLoader;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -91,7 +91,7 @@ public class LSPosedContext implements InstalldInterface {
             }
             var librarySearchPath = sb.toString();
             var initLoader = InstalldModule.class.getClassLoader();
-            var mcl = LspModuleClassLoader.loadApk(module.apkPath, module.file.preLoadedDexes, librarySearchPath, initLoader);
+            var mcl = PathClassLoader.loadApk(module.apkPath, module.file.preLoadedDexes, librarySearchPath, initLoader);
             if (mcl.loadClass(InstalldModule.class.getName()).getClassLoader() != initLoader) {
                 return false;
             }
